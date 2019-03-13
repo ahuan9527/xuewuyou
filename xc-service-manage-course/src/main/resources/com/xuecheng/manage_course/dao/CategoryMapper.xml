@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xuecheng.manage_course.dao.CategoryMapper">
+    <resultMap id="CategoryMap" type="com.xuecheng.framework.domain.course.ext.CategoryNode">
+        <id column="a_id" property="id"/>
+        <result column="a_name" property="name"/>
+        <result column="a_label" property="label"/>
+        <collection property="children" ofType="com.xuecheng.framework.domain.course.ext.CategoryNode">
+            <id column="b_id" property="id"/>
+            <result column="b_name" property="name"/>
+            <result column="b_label" property="label"/>
+            <collection property="children" ofType="com.xuecheng.framework.domain.course.ext.CategoryNode">
+                <id column="c_id" property="id"/>
+                <result column="c_name" property="name"/>
+                <result column="c_label" property="label"/>
+            </collection>
+        </collection>
+    </resultMap>
+    <select id="selectList" resultMap="CategoryMap">
+      SELECT a.id a_id,a.`name` a_name,a.label a_label,
+       b.id b_id,b.`name` b_name,b.label b_label,
+       c.id c_id,c.`name` c_name,c.label c_label
+        FROM `category` a left JOIN `category` b on a.id = b.parentid
+        LEFT JOIN `category` c on b.id = c.parentid
+        WHERE a.parentid = 0
+        ORDER BY a.orderby,b.orderby,c.orderby
+    </select>
+</mapper>
